@@ -23,10 +23,7 @@ public class Train {
         String trainType;
         long version;
 
-        @Override
-        public String toString() {
-            return "Juna{" + "cancelled=" + cancelled + ", commuterLineID='" + commuterLineID + '\'' + ", departureDate=" + departureDate + ", operatorShortCode='" + operatorShortCode + '\'' + ", operatorUICCode=" + operatorUICCode + ", runningCurrently=" + runningCurrently + ", timeTableRows=" + timeTableRows + ", timetableAcceptanceDate=" + timetableAcceptanceDate + ", timetableType='" + timetableType + '\'' + ", trainCategory='" + trainCategory + '\'' + ", trainNumber=" + trainNumber + ", trainType='" + trainType + '\'' + ", version=" + version + '}';
-        }
+
 
         public boolean isCancelled() {
             return cancelled;
@@ -84,6 +81,12 @@ public class Train {
             this.timeTableRows = timeTableRows;
         }
 
+        public void printTimeTableRows() {
+            for (TimeTableRow timeTable : getTimeTableRows()) {
+                System.out.println(timeTable);
+            }
+        }
+
         public Date getTimetableAcceptanceDate() {
             return timetableAcceptanceDate;
         }
@@ -131,7 +134,14 @@ public class Train {
         public void setVersion(long version) {
             this.version = version;
         }
+
+        @Override
+        public String toString() {
+                return String.valueOf(timeTableRows.get(1));
+
+         }
     }
+
 
 
 

@@ -35,11 +35,7 @@ public class UI {
                 List<Train> trains = mapper.readValue(url, listType);  // pelkkä List.class ei riitä tyypiksi
 
 
-                System.out.println(trains.get(0).getTrainNumber());
-
-                System.out.println(trains.get(0).getTimeTableRows().get(0).getScheduledTime());
-                System.out.println(trains.get(0).getTimeTableRows().get(0).getStationShortCode());
-                System.out.println(trains.get(0).getTimeTableRows().get(0).getType());
+                System.out.println(trains.get(0));
 
 
             } catch (Exception ex) {

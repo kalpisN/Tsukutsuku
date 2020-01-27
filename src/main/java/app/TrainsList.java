@@ -13,4 +13,9 @@ public class TrainsList extends ArrayList {
     public void addTrain(Train train){
         trains.add(train);
     }
+    public void printTrains() {
+        for (Train train : trains) {
+            System.out.println(train);
+        }
+    }
 }

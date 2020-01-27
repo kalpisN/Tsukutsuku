@@ -1,9 +1,15 @@
 package app;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jdk.jshell.execution.LocalExecutionControl;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
@@ -16,7 +22,7 @@ public class TimeTableRow {
     private boolean commercialStop;
     private int commercialTrack;
     private boolean cancelled;
-    private Date scheduledTime;
+    private LocalTime scheduledTime;
 
 
     public TimeTableRow() {
@@ -79,25 +85,20 @@ public class TimeTableRow {
         this.cancelled = cancelled;
     }
 
-    public Date getScheduledTime() {
+    public LocalTime getScheduledTime() {
         return scheduledTime;
     }
 
     public void setScheduledTime(Date scheduledTime) {
-        this.scheduledTime = scheduledTime;
+
+       LocalTime time = LocalDateTime.ofInstant(scheduledTime.toInstant(),
+               ZoneId.systemDefault()).toLocalTime();
+       this.scheduledTime = time;
+
     }
 
     @Override
     public String toString() {
-        return "TimeTableRow{" +
-                "stationShortCode='" + stationShortCode + '\'' +
-                ", operatorUICCode=" + operatorUICCode +
-                ", type='" + type + '\'' +
-                ", trainStopping=" + trainStopping +
-                ", commercialStop=" + commercialStop +
-                ", commercialTrack=" + commercialTrack +
-                ", cancelled=" + cancelled +
-                ", scheduledTime=" + scheduledTime +
-                '}';
+        return stationShortCode + ", track " + commercialTrack + " at " + scheduledTime;
     }
 }
