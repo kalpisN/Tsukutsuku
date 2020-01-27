@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -81,12 +83,6 @@ public class Train {
             this.timeTableRows = timeTableRows;
         }
 
-        public void printTimeTableRows() {
-            for (TimeTableRow timeTable : getTimeTableRows()) {
-                System.out.println(timeTable);
-            }
-        }
-
         public Date getTimetableAcceptanceDate() {
             return timetableAcceptanceDate;
         }
@@ -135,11 +131,24 @@ public class Train {
             this.version = version;
         }
 
+        public void printTimeTableRows() {
+            int i = 0;
+            while (i < timeTableRows.size()) {
+                System.out.println(timeTableRows.get(i));
+                i++;
+            }
+        }
+
+
         @Override
         public String toString() {
-                return String.valueOf(timeTableRows.get(1));
+                return trainType + " " + trainNumber + ": ";
 
          }
+
+//    LocalTime time = LocalDateTime.ofInstant(scheduledTime.toInstant(),
+//            ZoneId.systemDefault()).toLocalTime();
+//        return time;
     }
 
 

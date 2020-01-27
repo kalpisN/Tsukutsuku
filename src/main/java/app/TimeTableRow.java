@@ -22,7 +22,7 @@ public class TimeTableRow {
     private boolean commercialStop;
     private int commercialTrack;
     private boolean cancelled;
-    private LocalTime scheduledTime;
+    private Date scheduledTime;
 
 
     public TimeTableRow() {
@@ -85,15 +85,15 @@ public class TimeTableRow {
         this.cancelled = cancelled;
     }
 
-    public LocalTime getScheduledTime() {
-        return scheduledTime;
+    public Date getScheduledTime() {
+       return scheduledTime;
+
     }
 
     public void setScheduledTime(Date scheduledTime) {
+        this.scheduledTime = scheduledTime;
 
-       LocalTime time = LocalDateTime.ofInstant(scheduledTime.toInstant(),
-               ZoneId.systemDefault()).toLocalTime();
-       this.scheduledTime = time;
+
 
     }
 
