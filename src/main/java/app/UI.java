@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 
 import java.net.URI;
 import java.net.URL;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +24,10 @@ public class UI {
         System.out.println("Kerro määräsema: ");
         String arrivalStation = "ROI";
 
+
+
         readTrainJSONData(departureStation, arrivalStation);
+
     }
 
         private static void readTrainJSONData(String departureStation, String arrivalStation) {
@@ -34,6 +40,7 @@ public class UI {
                 CollectionType listType = mapper.getTypeFactory().constructCollectionType(TrainsList.class, Train.class);
                 List<Train> trains = mapper.readValue(url, listType);  // pelkkä List.class ei riitä tyypiksi
 
+                nextTrain(trains);
 
                 System.out.println(trains.get(0).getTrainNumber());
 
@@ -46,5 +53,25 @@ public class UI {
                 System.out.println(ex);
             }
         }
+
+        private static void nextTrain(List<Train> trains){
+            LocalDateTime now = LocalDateTime.now();
+
+
+            List<LocalDateTime> departureTimes = new ArrayList<>();
+
+            for (Train train: trains) {
+                Instant instant = train.getTimeTableRows().get(0).getScheduledTime().toInstant();
+                LocalDateTime departureTimeAsLocalDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+                departureTimes.add(departureTimeAsLocalDateTime);
+            }
+            //hakee aikataulurivilistan kullekkin junalle.hakee aikataulurivilistasta 1 rivin joka on lähtöaika lähtöasemalta.
+            // hakee ensimmäiseltä riviltä lähtöajan = scheduled time. muunnetaan lähtöaika Date LocalDateTimeksi
+            // lisää sen departuretimes listaan->saadaan lista 24 tunnin lähöajoista valitulta asemalta.
+
+            // vertailu tähän ajanhetkeen: pitää olla ajanhetken "nyt" jälkeen. 
+
+        }
+
 }
 
