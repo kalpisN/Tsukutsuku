@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class TimeTableRow {
     private String stationShortCode;
-    private  int operatorUICCode;
+    private int operatorUICCode;
     // private String countryCode;
     private String type;
     private boolean trainStopping;
@@ -19,7 +19,7 @@ public class TimeTableRow {
     private Date scheduledTime;
 
 
-    public TimeTableRow(){
+    public TimeTableRow() {
 
     }
 

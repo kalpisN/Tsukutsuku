@@ -40,7 +40,7 @@ public class UI {
                 System.out.println(trains.get(0).getTimeTableRows().get(0).getScheduledTime());
                 System.out.println(trains.get(0).getTimeTableRows().get(0).getStationShortCode());
                 System.out.println(trains.get(0).getTimeTableRows().get(0).getType());
-                
+
 
             } catch (Exception ex) {
                 System.out.println(ex);
