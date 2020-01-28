@@ -19,18 +19,16 @@ public class UI {
     public void run() {
         System.out.println("Kerro lähtöasema:");
         String departureStation = "HKI";
-
         System.out.println("Kerro määräsema: ");
         String arrivalStation = "LH";
 
         TrainsList tl = new TrainsList();
         tl.setTrains(readTrainJSONData(departureStation, arrivalStation));
-        //trains = readTrainJSONData(departureStation, arrivalStation);
-        //System.out.println(trains.);
+
         System.out.println();
-        //System.out.println(trains.get(0));
-        //HUOM! Seuraavan lähtevän junan METODI TÄSSÄ:
+
         System.out.println("Next train directly from " + departureStation + "to " + arrivalStation + " leaves today at: " + tl.nextTrain());
+
     }
 
         static List<Train> readTrainJSONData(String departureStation, String arrivalStation) {
@@ -43,16 +41,7 @@ public class UI {
                 ObjectMapper mapper = new ObjectMapper();
                 CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, Train.class);
                 //List<Train>
-                trains = mapper.readValue(url, listType);  // pelkkä List.class ei riitä tyypiksi
-
-
-/*
-                System.out.println(trains.get(0).getTrainNumber());
-                System.out.println(trains.get(0).getTimeTableRows().get(0).getScheduledTime());
-                System.out.println(trains.get(0).getTimeTableRows().get(0).getStationShortCode());
-                System.out.println(trains.get(0).getTimeTableRows().get(0).getType());*/
-
-
+                trains = mapper.readValue(url, listType);
             } catch (Exception ex) {
                 System.out.println(ex);
             }
@@ -60,8 +49,4 @@ public class UI {
         }
 
 
-
         }
-
-
-

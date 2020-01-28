@@ -1,9 +1,15 @@
 package app;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jdk.jshell.execution.LocalExecutionControl;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
@@ -80,25 +86,20 @@ public class TimeTableRow {
     }
 
     public Date getScheduledTime() {
-        return scheduledTime;
+       return scheduledTime;
+
     }
 
 
     public void setScheduledTime(Date scheduledTime) {
         this.scheduledTime = scheduledTime;
+
+
+
     }
 
     @Override
     public String toString() {
-        return "TimeTableRow{" +
-                "stationShortCode='" + stationShortCode + '\'' +
-                ", operatorUICCode=" + operatorUICCode +
-                ", type='" + type + '\'' +
-                ", trainStopping=" + trainStopping +
-                ", commercialStop=" + commercialStop +
-                ", commercialTrack=" + commercialTrack +
-                ", cancelled=" + cancelled +
-                ", scheduledTime=" + scheduledTime +
-                '}';
+        return stationShortCode + ", track " + commercialTrack + " at " + scheduledTime;
     }
 }

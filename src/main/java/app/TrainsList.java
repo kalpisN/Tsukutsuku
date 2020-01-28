@@ -17,7 +17,6 @@ public class TrainsList {
     public void setTrains(List<Train> trains) {
         this.trains = trains;
     }
-
     public void addTrain(Train train){
         trains.add(train);
     }
@@ -28,8 +27,8 @@ public class TrainsList {
         LocalDateTime nextTrain = i.atZone(ZoneId.systemDefault()).toLocalDateTime();
 
         return nextTrain.toLocalTime().toString();
-
     }
 
-
 }
+
+
