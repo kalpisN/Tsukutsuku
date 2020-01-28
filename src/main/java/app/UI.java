@@ -16,7 +16,7 @@ public class UI {
         System.out.println("Kerro lähtöasema:");
         String departureStation = "HKI";
         System.out.println("Kerro määräsema: ");
-        String arrivalStation = "ROI";
+        String arrivalStation = "LH";
         TrainsList tl = new TrainsList();
         tl.setTrains(readTrainJSONData(departureStation, arrivalStation));
         //trains = readTrainJSONData(departureStation, arrivalStation);

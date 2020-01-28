@@ -20,7 +20,7 @@ public class TimeTableRow {
     private String type;
     private boolean trainStopping;
     private boolean commercialStop;
-    private int commercialTrack;
+    private String commercialTrack;
     private boolean cancelled;
     private Date scheduledTime;
 
@@ -69,11 +69,11 @@ public class TimeTableRow {
         this.commercialStop = commercialStop;
     }
 
-    public int getCommercialTrack() {
+    public String getCommercialTrack() {
         return commercialTrack;
     }
 
-    public void setCommercialTrack(int commercialTrack) {
+    public void setCommercialTrack(String commercialTrack) {
         this.commercialTrack = commercialTrack;
     }
 
