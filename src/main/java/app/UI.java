@@ -17,6 +17,7 @@ import java.util.List;
 public class UI {
 
     public void run() {
+
         System.out.println("Kerro lähtöasema:");
         String departureStation = "HKI";
         System.out.println("Kerro määräsema: ");
