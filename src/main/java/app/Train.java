@@ -164,7 +164,7 @@ public class Train {
 
         @Override
         public String toString() {
-                return trainType + " " + trainNumber + ", ";
+                return trainType + " " + trainNumber;
 
          }
 
