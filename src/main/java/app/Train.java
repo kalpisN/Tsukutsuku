@@ -28,22 +28,27 @@ public class Train {
 
 
         public boolean isCancelled() {
+
             return cancelled;
         }
 
         public void setCancelled(boolean cancelled) {
+
             this.cancelled = cancelled;
         }
 
         public String getCommuterLineID() {
+
             return commuterLineID;
         }
 
         public void setCommuterLineID(String commuterLineID) {
+
             this.commuterLineID = commuterLineID;
         }
 
         public Date getDepartureDate() {
+
             return departureDate;
         }
 
@@ -52,22 +57,27 @@ public class Train {
         }
 
         public String getOperatorShortCode() {
+
             return operatorShortCode;
         }
 
         public void setOperatorShortCode(String operatorShortCode) {
+
             this.operatorShortCode = operatorShortCode;
         }
 
         public int getOperatorUICCode() {
+
             return operatorUICCode;
         }
 
         public void setOperatorUICCode(int operatorUICCode) {
+
             this.operatorUICCode = operatorUICCode;
         }
 
         public boolean isRunningCurrently() {
+
             return runningCurrently;
         }
 
@@ -80,10 +90,12 @@ public class Train {
         }
 
         public void setTimeTableRows(List<TimeTableRow> timeTableRows) {
+
             this.timeTableRows = timeTableRows;
         }
 
         public Date getTimetableAcceptanceDate() {
+
             return timetableAcceptanceDate;
         }
 
@@ -92,42 +104,52 @@ public class Train {
         }
 
         public String getTimetableType() {
+
             return timetableType;
         }
 
         public void setTimetableType(String timetableType) {
+
             this.timetableType = timetableType;
         }
 
         public String getTrainCategory() {
+
             return trainCategory;
         }
 
         public void setTrainCategory(String trainCategory) {
+
             this.trainCategory = trainCategory;
         }
 
         public int getTrainNumber() {
+
             return trainNumber;
         }
 
         public void setTrainNumber(int trainNumber) {
+
             this.trainNumber = trainNumber;
         }
 
         public String getTrainType() {
+
             return trainType;
         }
 
         public void setTrainType(String trainType) {
+
             this.trainType = trainType;
         }
 
         public long getVersion() {
+
             return version;
         }
 
         public void setVersion(long version) {
+
             this.version = version;
         }
 
@@ -142,7 +164,7 @@ public class Train {
 
         @Override
         public String toString() {
-                return trainType + " " + trainNumber + ": ";
+                return trainType + " " + trainNumber + ", ";
 
          }
 

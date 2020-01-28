@@ -13,40 +13,141 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
+
 
 public class UI {
 
     public void run() {
-        System.out.println("Kerro lähtöasema:");
-        String departureStation = "HKI";
-        System.out.println("Kerro määräsema: ");
-        String arrivalStation = "LH";
 
+        Scanner reader = new Scanner(System.in);
         TrainsList tl = new TrainsList();
-        tl.setTrains(readTrainJSONData(departureStation, arrivalStation));
+        String baseurl = "https://rata.digitraffic.fi/api/v1";
+        List<Station> stations = StationsListHelper.readJSONDataAndListPassangerTrafficStationsToList(baseurl);
 
-        System.out.println();
 
-        System.out.println("Next train directly from " + departureStation + "to " + arrivalStation + " leaves today at: " + tl.nextTrain());
+
+        System.out.println("Welcome!");
+
+        for (;;) {
+
+            System.out.println("1. Search next train");
+            System.out.println("2. Search all trains between chosen stations");
+            System.out.println("3. Search all stops for specific train");
+            System.out.println("0. Exit");
+            String userInput = reader.nextLine().trim();
+
+
+
+            if ("0".equals(userInput)) {
+                break;
+            }
+
+            else if ("1".equals(userInput)) {
+                SearchNextTrain(stations, reader);
+            }
+
+            else if ("2".equals(userInput)) {
+                allTrainsBetweenStations(reader, stations);
+            }
+
+            else if ("3".equals((userInput))) {
+                searchAllStops(reader, stations);
+            }
+        }
 
     }
 
-        static List<Train> readTrainJSONData(String departureStation, String arrivalStation) {
-        String between = departureStation + "/" + arrivalStation;
-            System.out.println(between);
-            List<Train> trains = null;
-        String baseurl = "https://rata.digitraffic.fi/api/v1";
-            try {
-                URL url = new URL(URI.create(String.format("%s/live-trains/station/" + between, baseurl)).toASCIIString());
-                ObjectMapper mapper = new ObjectMapper();
-                CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, Train.class);
-                //List<Train>
-                trains = mapper.readValue(url, listType);
-            } catch (Exception ex) {
-                System.out.println(ex);
+    private void searchAllStops(Scanner reader, List<Station> stations) {
+        String departureStation = askDepartureStation(reader);
+        String arrivalStation = askArrivalStation(reader);
+        TrainsList tl = createTrainsList(departureStation, arrivalStation, stations);
+
+        for (Train train : tl.getTrains()) {
+            System.out.println(train);
+            System.out.print("Leaves from " + departureStation + " at " + train.getTimeTableRows().get(0).getScheduledTime().toLocalTime() + ", ");
+            int index = (train.getTimeTableRows().size()) - 1;
+            System.out.print("arrives to " + arrivalStation + " at " + train.getTimeTableRows().get(index).getScheduledTime().toLocalTime());
+            System.out.println("");
+        }
+
+        int trainNumber = askTrainNumber(reader);
+
+        for (Train train : tl.getTrains()) {
+            if (train.getTrainNumber() == trainNumber) {
+                System.out.println(train.getTimeTableRows());
             }
-            return trains;
         }
 
+    }
 
+    private void printTrainsList(TrainsList tl) {
+    }
+
+
+    private int askTrainNumber(Scanner reader) {
+        System.out.println("Type train number: ");
+        int trainNumber = Integer.valueOf(reader.nextLine());
+
+        return trainNumber;
+    }
+
+    private TrainsList createTrainsList(String departureStation, String arrivalStation, List<Station> stations) {
+        TrainsList tl = new TrainsList();
+        String departureStationShortCode= StationsListHelper.convertStationNameToShortCode(departureStation,stations);
+        String arrivalStationShortCode = StationsListHelper.convertStationNameToShortCode(arrivalStation,stations);
+        tl.setTrains(readTrainJSONData(departureStationShortCode, arrivalStationShortCode));
+
+        return tl;
+    }
+
+    private void SearchNextTrain(List<Station> stations, Scanner reader) {
+        String departureStation = askDepartureStation(reader);
+        String arrivalStation = askArrivalStation(reader);
+        TrainsList tl = createTrainsList(departureStation, arrivalStation, stations);
+        System.out.println("Next train directly from " + departureStation+ " to " + arrivalStation + " leaves today at: " + tl.nextTrain());
+        System.out.println("");
+    }
+
+    static List<Train> readTrainJSONData(String departureStation, String arrivalStation) {
+        String between = departureStation + "/" + arrivalStation;
+        List<Train> trains = null;
+        String baseurl = "https://rata.digitraffic.fi/api/v1";
+        try {
+            URL url = new URL(URI.create(String.format("%s/live-trains/station/" + between, baseurl)).toASCIIString());
+            ObjectMapper mapper = new ObjectMapper();
+            CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, Train.class);
+            //List<Train>
+            trains = mapper.readValue(url, listType);
+        } catch (Exception ex) {
+            System.out.println(ex);
         }
+        return trains;
+    }
+
+    private static String askDepartureStation(Scanner reader) {
+        System.out.print("Type departure station: ");
+        String departureStation = reader.nextLine();
+        return departureStation;
+    }
+
+    private static String askArrivalStation(Scanner reader) {
+        System.out.print("Type destination: ");
+        String arrivalStation = reader.nextLine();
+        return arrivalStation;
+    }
+
+    private void allTrainsBetweenStations(Scanner reader, List<Station> stations) {
+        String departureStation = askDepartureStation(reader);
+        String arrivalStation = askArrivalStation(reader);
+        TrainsList tl = createTrainsList(departureStation, arrivalStation, stations);
+
+        for (Train train : tl.getTrains()) {
+            System.out.println(train);
+            System.out.print("Leaves from " + departureStation + " at " + train.getTimeTableRows().get(0).getScheduledTime().toLocalTime() + ", ");
+            int index = (train.getTimeTableRows().size()) - 1;
+            System.out.print("arrives to " + arrivalStation + " at " + train.getTimeTableRows().get(index).getScheduledTime().toLocalTime());
+            System.out.println("");
+        }
+    }
+}
