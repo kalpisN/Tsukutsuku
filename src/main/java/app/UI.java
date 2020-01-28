@@ -1,0 +1,52 @@
+package app;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+
+import java.net.URI;
+import java.net.URL;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class UI {
+
+    public void run() {
+        System.out.println("Kerro lähtöasema:");
+        String departureStation = "HKI";
+        System.out.println("Kerro määräsema: ");
+        String arrivalStation = "LH";
+
+        TrainsList tl = new TrainsList();
+        tl.setTrains(readTrainJSONData(departureStation, arrivalStation));
+
+        System.out.println();
+
+        System.out.println("Next train directly from " + departureStation + "to " + arrivalStation + " leaves today at: " + tl.nextTrain());
+
+    }
+
+        static List<Train> readTrainJSONData(String departureStation, String arrivalStation) {
+        String between = departureStation + "/" + arrivalStation;
+            System.out.println(between);
+            List<Train> trains = null;
+        String baseurl = "https://rata.digitraffic.fi/api/v1";
+            try {
+                URL url = new URL(URI.create(String.format("%s/live-trains/station/" + between, baseurl)).toASCIIString());
+                ObjectMapper mapper = new ObjectMapper();
+                CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, Train.class);
+                //List<Train>
+                trains = mapper.readValue(url, listType);
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+            return trains;
+        }
+
+
+        }

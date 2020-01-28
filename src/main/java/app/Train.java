@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -23,10 +25,7 @@ public class Train {
         String trainType;
         long version;
 
-        @Override
-        public String toString() {
-            return "Juna{" + "cancelled=" + cancelled + ", commuterLineID='" + commuterLineID + '\'' + ", departureDate=" + departureDate + ", operatorShortCode='" + operatorShortCode + '\'' + ", operatorUICCode=" + operatorUICCode + ", runningCurrently=" + runningCurrently + ", timeTableRows=" + timeTableRows + ", timetableAcceptanceDate=" + timetableAcceptanceDate + ", timetableType='" + timetableType + '\'' + ", trainCategory='" + trainCategory + '\'' + ", trainNumber=" + trainNumber + ", trainType='" + trainType + '\'' + ", version=" + version + '}';
-        }
+
 
         public boolean isCancelled() {
             return cancelled;
@@ -131,7 +130,27 @@ public class Train {
         public void setVersion(long version) {
             this.version = version;
         }
+
+        public void printTimeTableRows() {
+            int i = 0;
+            while (i < timeTableRows.size()) {
+                System.out.println(timeTableRows.get(i));
+                i++;
+            }
+        }
+
+
+        @Override
+        public String toString() {
+                return trainType + " " + trainNumber + ": ";
+
+         }
+
+//    LocalTime time = LocalDateTime.ofInstant(scheduledTime.toInstant(),
+//            ZoneId.systemDefault()).toLocalTime();
+//        return time;
     }
+
 
 
 
