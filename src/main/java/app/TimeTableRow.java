@@ -90,6 +90,7 @@ public class TimeTableRow {
 
     }
 
+
     public void setScheduledTime(Date scheduledTime) {
         this.scheduledTime = scheduledTime;
 
