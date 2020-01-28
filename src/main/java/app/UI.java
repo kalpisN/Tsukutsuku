@@ -63,12 +63,14 @@ public class UI {
         String arrivalStation = askArrivalStation(reader);
         TrainsList tl = createTrainsList(departureStation, arrivalStation, stations);
 
-        for (Train train : tl.getTrains()) {
-            System.out.println(train);
-            System.out.print("Leaves from " + departureStation + " at " + train.getTimeTableRows().get(0).getScheduledTime().toLocalTime() + ", ");
-            int index = (train.getTimeTableRows().size()) - 1;
-            System.out.print("arrives to " + arrivalStation + " at " + train.getTimeTableRows().get(index).getScheduledTime().toLocalTime());
+            int i = 0;
+        while (i < tl.getTrains().size()) {
+            System.out.println(tl.getTrains().get(i));
+            System.out.print("Leaves from " + departureStation + " at " + tl.getTrains().get(i).getTimeTableRows().get(0).getScheduledTime().toLocalTime() + ", ");
+            int index = (tl.getTrains().get(i).getTimeTableRows().size()) - 1;
+            System.out.print("arrives to " + arrivalStation + " at " + tl.getTrains().get(i).getTimeTableRows().get(index).getScheduledTime().toLocalTime());
             System.out.println("");
+            i++;
         }
 
         int trainNumber = askTrainNumber(reader);
