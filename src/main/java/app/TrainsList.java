@@ -22,11 +22,8 @@ public class TrainsList {
     }
 
     public String nextTrain(){
-        Date nextTrainTime = trains.get(0).getTimeTableRows().get(0).getScheduledTime();
-        Instant i = nextTrainTime.toInstant();
-        LocalDateTime nextTrain = i.atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-        return nextTrain.toLocalTime().toString();
+        return trains.get(0).getTimeTableRows().get(0).getScheduledTime().toLocalTime().toString();
     }
 
 }

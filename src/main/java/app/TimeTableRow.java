@@ -30,26 +30,32 @@ public class TimeTableRow {
     }
 
     public String getStationShortCode() {
+
         return stationShortCode;
     }
 
     public void setStationShortCode(String stationShortCode) {
+
         this.stationShortCode = stationShortCode;
     }
 
     public int getOperatorUICCode() {
+
         return operatorUICCode;
     }
 
     public void setOperatorUICCode(int operatorUICCode) {
+
         this.operatorUICCode = operatorUICCode;
     }
 
     public String getType() {
+
         return type;
     }
 
     public void setType(String type) {
+
         this.type = type;
     }
 
@@ -58,6 +64,7 @@ public class TimeTableRow {
     }
 
     public void setTrainStopping(boolean trainStopping) {
+
         this.trainStopping = trainStopping;
     }
 
@@ -66,6 +73,7 @@ public class TimeTableRow {
     }
 
     public void setCommercialStop(boolean commercialStop) {
+
         this.commercialStop = commercialStop;
     }
 
@@ -74,6 +82,7 @@ public class TimeTableRow {
     }
 
     public void setCommercialTrack(String commercialTrack) {
+
         this.commercialTrack = commercialTrack;
     }
 
@@ -82,11 +91,14 @@ public class TimeTableRow {
     }
 
     public void setCancelled(boolean cancelled) {
+
         this.cancelled = cancelled;
     }
 
-    public Date getScheduledTime() {
-       return scheduledTime;
+    public LocalDateTime getScheduledTime() {
+        Instant i = scheduledTime.toInstant();
+        LocalDateTime sTime = i.atZone(ZoneId.systemDefault()).toLocalDateTime();
+       return sTime;
 
     }
 
@@ -95,11 +107,11 @@ public class TimeTableRow {
         this.scheduledTime = scheduledTime;
 
 
-
     }
 
     @Override
     public String toString() {
+
         return stationShortCode + ", track " + commercialTrack + " at " + scheduledTime;
     }
 }
