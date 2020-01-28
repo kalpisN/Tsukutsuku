@@ -7,9 +7,8 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 
 import java.net.URI;
 import java.net.URL;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.sql.Time;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +33,7 @@ public class UI {
 
             System.out.println("1. Search next train");
             System.out.println("2. Search all trains between chosen stations");
-            System.out.println("3. Search all stops for specific train");
+            System.out.println("3. Search all stops and stopping times for specific train");
             System.out.println("0. Exit");
             String userInput = reader.nextLine().trim();
 
@@ -75,12 +74,14 @@ public class UI {
         }
 
         int trainNumber = askTrainNumber(reader);
-
+        List<TimeTableRow> rows = new ArrayList<>();
         for (Train train : tl.getTrains()) {
             if (train.getTrainNumber() == trainNumber) {
-                System.out.println(train.getTimeTableRows());
+                //System.out.println(train.getTimeTableRows()); // kerää tietyn junan aikataulurivit listaan ja lähettää listan metodille stoppingtime
+                rows = train.getTimeTableRows();
             }
         }
+        System.out.println(stoppingTime(rows)); // palauttaa minuuttipysähdyksen 
 
     }
 
@@ -152,5 +153,16 @@ public class UI {
             System.out.print("arrives to " + arrivalStation + " at " + train.getTimeTableRows().get(index).getScheduledTime().toLocalTime());
             System.out.println("");
         }
+    }
+
+    private long stoppingTime(List<TimeTableRow> rows){
+        int i = 0;
+
+        LocalDateTime arrival = rows.get(1).getScheduledTime();
+        LocalDateTime departure = rows.get(2).getScheduledTime();
+
+        Duration stoppingtime = Duration.between(arrival,departure);
+
+        return stoppingtime.toMinutes();
     }
 }
