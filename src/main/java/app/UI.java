@@ -10,13 +10,13 @@ import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.io.IOException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-
 
 
 public class UI {
@@ -37,7 +37,7 @@ public class UI {
     private void menu(Scanner reader, List<Station> stations) {
         for ( ; ; ) {
             System.out.println("");
-            System.out.print("1. Search next train between chosen stations\n"
+            System.out.println("1. Search next train between chosen stations\n"
                             + "2. Search all trains between chosen stations\n"
                             + "3. Search all stops and stopping time for specific train\n"
                             + "4. List all passenger traffic stations\n" + "0. Exit\n");
@@ -87,11 +87,13 @@ public class UI {
 
         for (; ; ) {
             departureStation = askDepartureStation(reader);
+            String departureShortcode = StationsListHelper.convertStationNameToShortCode(departureStation, stations);
             if (departureStation.equalsIgnoreCase("X")) {
                 break;
 
             }
             arrivalStation = askArrivalStation(reader);
+            String arrivalShortCode = StationsListHelper.convertStationNameToShortCode(arrivalStation,stations);
             if (arrivalStation.equalsIgnoreCase("X")) {
                 break;
             }
@@ -108,11 +110,27 @@ public class UI {
                         rows = train.getTimeTableRows();
                     }
                 }
-                System.out.println(stoppingTimeAtStations(rows, stations));
+                List<TimeTableRow> filteredRows = new ArrayList<>();
+                int wantedBeginning = 0;
+                int wantedEnd = 0;
 
-                System.out.println();
+                for(int i = 0; i<rows.size(); i++){
+                    if (rows.get(i).getStationShortCode().equals(departureShortcode)){
+                        wantedBeginning = i;
+                    }
+                    if (rows.get(i).getStationShortCode().equals(arrivalShortCode)){
+                        wantedEnd = i;
+                    }
+                }
+                filteredRows= rows.subList(wantedBeginning,wantedEnd);
+
+
+                System.out.println(filteredRows.get(0).getScheduledTime().toLocalTime() + " " + departureStation);
+                System.out.print(stoppingTimeAtStations(filteredRows, stations));
+                System.out.println(rows.get(filteredRows.size()-1).getScheduledTime().toLocalTime() + " " + arrivalStation);
 
                 break;
+
             } catch (Exception e) {
             }
         }
@@ -192,7 +210,7 @@ public class UI {
 
             trains = mapper.readValue(url, listType);
         } catch (Exception ex) {
-            System.out.println("No connections were found between chosen departure and arrival stations");
+            System.err.println("No connections were found between chosen departure and arrival stations");
         }
         return trains;
     }
@@ -258,7 +276,8 @@ public class UI {
         Duration stoppingtime = null;
         List<StringBuilder> stoppingstations = new ArrayList<>();
         String stoppingstation = null;
-        while (i < rows.size()-1) { // tässä tulee moka, lista käydään läpi liian monta kertaa koska rivejä käsitellään parina
+        while (i < rows.size()-1) {
+            i++;
             stoppingstation  = StationsListHelper.convertStationShortCodeToStationName(rows.get(i).getStationShortCode(), stations);
             LocalDateTime arrival = rows.get(i).getScheduledTime();
             LocalDateTime departure = rows.get(i+1).getScheduledTime();
@@ -267,10 +286,12 @@ public class UI {
             String time = String.valueOf(stime);
             int t = Integer.valueOf(time);
             if (rows.get(i).getTrainStopping()) {
-                stationAndTime.append(stoppingstation).append(", stops for ").append(time).append(" minutes\n");
-                stoppingstations.add(stationAndTime);
+                if (!(stoppingstation == null)) {
+                    stationAndTime.append(arrival.toLocalTime()).append(" ").append(stoppingstation).append(", stops for ").append(time).append(" minutes\n");
+                    stoppingstations.add(stationAndTime);
+                }
             }
-            i = i+2;
+            i++;
         }
         return stationAndTime;
     }
