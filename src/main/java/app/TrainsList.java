@@ -22,7 +22,7 @@ public class TrainsList {
         trains.add(train);
     }
 
-    public String nextTrain(){
+    public String nextTrain() throws Exception{
 
         return trains.get(0).getTimeTableRows().get(0).getScheduledTime().toLocalTime().toString();
     }
@@ -37,6 +37,7 @@ public class TrainsList {
         }
 
     }
+/*
     public void printTimeTableRows(TrainsList tl, int trainNumber) {
         for (Train train : tl.getTrains()) {
             if (train.getTrainNumber() == trainNumber) {
@@ -44,6 +45,7 @@ public class TrainsList {
             }
         }
     }
+*/
 
     public void printTrainAssembly(String junanumero, TrainsList tl) {
 

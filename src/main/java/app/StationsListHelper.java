@@ -28,7 +28,7 @@ public abstract class StationsListHelper {
     }
 
     public static String convertStationNameToShortCode(String stationName, List<Station> stations){//tätä voi hienosäätää niin että parametri-Stringin ei tarvitse olla loppuun asti kirjoitettu
-        String shortCode="";                                                                       //voi myös muuttaa niin että käsittelee jos annettu nimi on virheellinen, eli tulee virheilmoitus
+        String shortCode=null;                                                                      //voi myös muuttaa niin että käsittelee jos annettu nimi on virheellinen, eli tulee virheilmoitus
         for(Station station: stations) {
             if (stationName.trim().equalsIgnoreCase(station.getStationName())) {
                 shortCode = station.getStationShortCode();
@@ -37,7 +37,7 @@ public abstract class StationsListHelper {
         return shortCode;
     }
     public static String convertStationShortCodeToStationName(String shortCode, List<Station> stations){
-        String stationName = "";
+        String stationName = null;
         for(Station station: stations){
             if(shortCode.trim().equalsIgnoreCase(station.getStationShortCode())){
                 stationName = station.getStationName();

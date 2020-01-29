@@ -37,9 +37,10 @@ public class UI {
     private void menu(Scanner reader, List<Station> stations) {
         for ( ; ; ) {
             System.out.println("");
-            System.out.print("1. Search next train between chosen stations\n" + "2. Search all trains between chosen stations\n"
-                    + "3. Search all stops and stopping time for specific train\n" + "0. Exit");
-            System.out.println("");
+            System.out.print("1. Search next train between chosen stations\n"
+                            + "2. Search all trains between chosen stations\n"
+                            + "3. Search all stops and stopping time for specific train\n"
+                            + "4. List all passenger traffic stations\n" + "0. Exit\n");
 
             if(menuUserInput(reader, stations).equals(false)) {
                 break;
@@ -58,27 +59,63 @@ public class UI {
                 allTrainsBetweenStations(reader, stations);
             } else if ("3".equals(userInput) || "3.".equals(userInput)) {
                 searchAllStops(reader, stations);
+
+            }
+            else if("4".equals(userInput) || "4.".equals(userInput)) {
+                printAllStation(stations);
+            }
+            else {
+                System.out.println(String.format("Unknown command: '%s'", userInput));
+                System.out.println();
             }
             return true;
     }
 
+    private void printAllStation(List<Station> stations) {
+        for (Station station: stations) {
+            System.out.println(station.getStationName());
+        }
+
+            System.out.println();
+    }
+
 
     private void searchAllStops(Scanner reader, List<Station> stations) {
-        String departureStation = askDepartureStation(reader);
-        String arrivalStation = askArrivalStation(reader);
-        TrainsList tl = createTrainsList(departureStation, arrivalStation, stations);
+        TrainsList tl = null;
+        String departureStation = null;
+        String arrivalStation = null;
 
-        tl.printTrains(tl, departureStation, arrivalStation); // calls method from TrainsList-class which prints out all the trains from between stations given as parametres
+        for (; ; ) {
+            departureStation = askDepartureStation(reader);
+            if (departureStation.equalsIgnoreCase("X")) {
+                break;
 
-        int trainNumber = askTrainNumber(reader);
-        List<TimeTableRow> rows = new ArrayList<>();
-        for (Train train : tl.getTrains()) {
-            if (train.getTrainNumber() == trainNumber) {
-                rows = train.getTimeTableRows();
+            }
+            arrivalStation = askArrivalStation(reader);
+            if (arrivalStation.equalsIgnoreCase("X")) {
+                break;
+            }
+
+            try {
+                tl = createTrainsList(departureStation, arrivalStation, stations);
+
+                tl.printTrains(tl, departureStation, arrivalStation); // calls method from TrainsList-class which prints out all the trains from between stations given as parametres
+
+                int trainNumber = askTrainNumber(reader);
+                List<TimeTableRow> rows = new ArrayList<>();
+                for (Train train : tl.getTrains()) {
+                    if (train.getTrainNumber() == trainNumber) {
+                        rows = train.getTimeTableRows();
+                    }
+                }
+                System.out.println(stoppingTimeAtStations(rows, stations));
+
+                System.out.println();
+
+                break;
+            } catch (Exception e) {
             }
         }
-        System.out.println(stoppingTimeAtStations(rows, stations));
-
     }
 
     private int askTrainNumber(Scanner reader) {
@@ -88,21 +125,60 @@ public class UI {
         return trainNumber;
     }
 
-    private TrainsList createTrainsList(String departureStation, String arrivalStation, List<Station> stations) {
-        TrainsList tl = new TrainsList();
-        String departureStationShortCode= StationsListHelper.convertStationNameToShortCode(departureStation,stations);
-        String arrivalStationShortCode = StationsListHelper.convertStationNameToShortCode(arrivalStation,stations);
-        tl.setTrains(readTrainJSONData(departureStationShortCode, arrivalStationShortCode));
+    private TrainsList createTrainsList(String departureStation, String arrivalStation, List<Station> stations) throws Exception {
+            TrainsList tl = new TrainsList();
+            String departureStationShortCode = StationsListHelper.convertStationNameToShortCode(departureStation, stations);
+            if (departureStationShortCode == null){
+                System.out.println(String.format("INCORRECT DEPARTURE STATION: '%s'", departureStation));
+                suggestProperStation(departureStation, stations);
+            }
+            String arrivalStationShortCode = StationsListHelper.convertStationNameToShortCode(arrivalStation,stations);
+            if (arrivalStationShortCode == null){
+                System.out.println(String.format("INCORRECT ARRIVAL STATION: '%s'", arrivalStation));
+                suggestProperStation(arrivalStation,stations);
+            }
+            tl.setTrains(readTrainJSONData(departureStationShortCode, arrivalStationShortCode));
+            return tl;
+        }
 
-        return tl;
+
+    private void suggestProperStation(String typedStation,List<Station> stations) {
+        List<String> suggestedStations = new ArrayList<>();
+        for(Station station: stations) {
+            if (station.stationName.toUpperCase().contains(typedStation.trim().toUpperCase())) {
+                suggestedStations.add(station.stationName);
+            }
+        }
+        if (suggestedStations.size()!=0){
+            System.out.print("Suggested stations: ");
+            for (String stationName: suggestedStations){
+                System.out.print(stationName + ", ");
+            }
+            System.out.println();
+        }
     }
 
     private void SearchNextTrain(List<Station> stations, Scanner reader) {
-        String departureStation = askDepartureStation(reader);
-        String arrivalStation = askArrivalStation(reader);
-        TrainsList tl = createTrainsList(departureStation, arrivalStation, stations);
-        System.out.println("");
-        System.out.println("Next train directly from " + departureStation+ " to " + arrivalStation + " leaves today at: " + tl.nextTrain());
+        String departureStation = null;
+        String arrivalStation = null;
+        TrainsList tl = null;
+        for(;;) {
+            departureStation = askDepartureStation(reader);
+            if (departureStation.equalsIgnoreCase("X")) {
+                break;
+            } arrivalStation = askArrivalStation(reader);
+            if (arrivalStation.equalsIgnoreCase("X")){
+                break;
+            }
+            try{
+                tl = createTrainsList(departureStation, arrivalStation, stations);
+                System.out.println("Next train directly from " + departureStation+ " to " + arrivalStation + " leaves today at: " + tl.nextTrain());
+                System.out.println("");
+                break;
+            }catch (Exception e){
+                System.out.println();
+            }
+        }
     }
 
     static List<Train> readTrainJSONData(String departureStation, String arrivalStation) {
@@ -116,13 +192,14 @@ public class UI {
 
             trains = mapper.readValue(url, listType);
         } catch (Exception ex) {
-            System.out.println(ex);
+            System.out.println("No connections were found between chosen departure and arrival stations");
         }
         return trains;
     }
 
     private static String askDepartureStation(Scanner reader) {
-        System.out.print("Type departure station: ");
+        System.out.println("Type 'X' to return to main menu\n\n"
+                            + "Type departure station: ");
         String departureStation = reader.nextLine();
 
         return departureStation;
@@ -136,10 +213,27 @@ public class UI {
     }
 
     private void allTrainsBetweenStations(Scanner reader, List<Station> stations) {
-        String departureStation = askDepartureStation(reader);
-        String arrivalStation = askArrivalStation(reader);
-        TrainsList tl = createTrainsList(departureStation, arrivalStation, stations);
-            tl.printTrains(tl, departureStation, arrivalStation);
+        String departureStation = null;
+        String arrivalStation = null;
+        TrainsList tl = null;
+        for (; ; ) {
+            departureStation = askDepartureStation(reader);
+            if (departureStation.equalsIgnoreCase("X")) {
+                break;
+            }
+            arrivalStation = askArrivalStation(reader);
+            if (arrivalStation.equalsIgnoreCase("X")) {
+                break;
+            }
+            try {
+                tl = createTrainsList(departureStation, arrivalStation, stations);
+                tl.printTrains(tl, departureStation, arrivalStation);
+                break;
+
+            } catch (Exception e) {
+                System.out.println();
+            }
+        }
     }
 
     public void getRestaurantMenu(String file) {
