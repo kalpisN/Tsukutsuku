@@ -26,12 +26,10 @@ public class UI {
         TrainsList tl = new TrainsList();
         String baseurl = "https://rata.digitraffic.fi/api/v1";
         List<Station> stations = StationsListHelper.readJSONDataAndListPassangerTrafficStationsToList(baseurl);
-
         System.out.println("Welcome!");
+
         menu(reader, stations);
     }
-
-
 
 
 
@@ -134,10 +132,10 @@ public class UI {
             tl.printTrains(tl, departureStation, arrivalStation);
     }
 
-    public void getRestaurantMenu() {
+    public void getRestaurantMenu(String file) {
         PDDocument document = null;
         try {
-            document = PDDocument.load(new File("RavintolavaunuHinnasto.pdf"));
+            document = PDDocument.load(new File(file));
 
             if (!document.isEncrypted()) {
                 PDFTextStripper stripper = new PDFTextStripper();
