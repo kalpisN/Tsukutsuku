@@ -44,4 +44,14 @@ public class TrainsList {
             }
         }
     }
+
+    public void printTrainAssembly(String junanumero, TrainsList tl) {
+
+        /*for (Train train : tl.getTrains()) {
+            if (tl.getTrains().)
+        }*/
+
+
+
+    }
 }

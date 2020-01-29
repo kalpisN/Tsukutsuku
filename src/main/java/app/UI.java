@@ -8,14 +8,15 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.io.File;
 import java.io.IOException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.pdfbox.text.PDFTextStripperByArea;
+
 
 
 public class UI {
@@ -37,7 +38,7 @@ public class UI {
         for ( ; ; ) {
             System.out.println("");
             System.out.print("1. Search next train between chosen stations\n" + "2. Search all trains between chosen stations\n"
-                    + "3. Search all stops for specific train\n" + "0. Exit");
+                    + "3. Search all stops and stopping time for specific train\n" + "0. Exit");
             System.out.println("");
 
             if(menuUserInput(reader, stations).equals(false)) {
@@ -55,7 +56,7 @@ public class UI {
                 SearchNextTrain(stations, reader);
             } else if ("2".equals(userInput) || "2.".equals(userInput)) {
                 allTrainsBetweenStations(reader, stations);
-            } else if ("3".equals(userInput) || "4.".equals(userInput)) {
+            } else if ("3".equals(userInput) || "3.".equals(userInput)) {
                 searchAllStops(reader, stations);
             }
             return true;
@@ -67,8 +68,17 @@ public class UI {
         String arrivalStation = askArrivalStation(reader);
         TrainsList tl = createTrainsList(departureStation, arrivalStation, stations);
 
-            tl.printTrains(tl, departureStation, arrivalStation); // calls method from TrainsList-class which prints out all the trains from between stations given as parametres
-            tl.printTimeTableRows(tl, askTrainNumber(reader));
+        tl.printTrains(tl, departureStation, arrivalStation); // calls method from TrainsList-class which prints out all the trains from between stations given as parametres
+
+        int trainNumber = askTrainNumber(reader);
+        List<TimeTableRow> rows = new ArrayList<>();
+        for (Train train : tl.getTrains()) {
+            if (train.getTrainNumber() == trainNumber) {
+                rows = train.getTimeTableRows();
+            }
+        }
+        System.out.println(stoppingTimeAtStations(rows, stations));
+
     }
 
     private int askTrainNumber(Scanner reader) {
@@ -147,5 +157,27 @@ public class UI {
             e.printStackTrace();
         }
 
+    }
+    private StringBuilder stoppingTimeAtStations(List<TimeTableRow> rows, List<Station> stations){
+        StringBuilder stationAndTime = new StringBuilder();
+        int i = 1;
+        Duration stoppingtime = null;
+        List<StringBuilder> stoppingstations = new ArrayList<>();
+        String stoppingstation = null;
+        while (i < rows.size()-1) { // tässä tulee moka, lista käydään läpi liian monta kertaa koska rivejä käsitellään parina
+            stoppingstation  = StationsListHelper.convertStationShortCodeToStationName(rows.get(i).getStationShortCode(), stations);
+            LocalDateTime arrival = rows.get(i).getScheduledTime();
+            LocalDateTime departure = rows.get(i+1).getScheduledTime();
+            stoppingtime = Duration.between(arrival, departure);
+            long stime = stoppingtime.toMinutes();
+            String time = String.valueOf(stime);
+            int t = Integer.valueOf(time);
+            if (rows.get(i).getTrainStopping()) {
+                stationAndTime.append(stoppingstation).append(", stops for ").append(time).append(" minutes\n");
+                stoppingstations.add(stationAndTime);
+            }
+            i = i+2;
+        }
+        return stationAndTime;
     }
 }
