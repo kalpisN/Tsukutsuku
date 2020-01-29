@@ -59,7 +59,7 @@ public class TimeTableRow {
         this.type = type;
     }
 
-    public boolean isTrainStopping() {
+    public boolean getTrainStopping() {
         return trainStopping;
     }
 
