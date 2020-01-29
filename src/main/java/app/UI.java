@@ -9,10 +9,7 @@ import java.net.URI;
 import java.net.URL;
 import java.sql.Time;
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class UI {
@@ -81,7 +78,8 @@ public class UI {
                 rows = train.getTimeTableRows();
             }
         }
-        System.out.println(stoppingTime(rows)); // palauttaa minuuttipysähdyksen 
+
+        System.out.println(stoppingTimeAtStations(rows, stations)); // palauttaa minuuttipysähdyksen
 
     }
 
@@ -155,14 +153,30 @@ public class UI {
         }
     }
 
-    private long stoppingTime(List<TimeTableRow> rows){
-        int i = 0;
+    private StringBuilder stoppingTimeAtStations(List<TimeTableRow> rows, List<Station> stations){
+        StringBuilder stationAndTime = new StringBuilder();
+        int i = 1;
+        Duration stoppingtime = null;
+        List<StringBuilder> stoppingstations = new ArrayList<>();
+        String stoppingstation = null;
+        while (i < rows.size()-1) { // tässä tulee moka, lista käydään läpi liian monta kertaa koska rivejä käsitellään parina
+            stoppingstation  = StationsListHelper.convertStationShortCodeToStationName(rows.get(i).getStationShortCode(), stations);
+            LocalDateTime arrival = rows.get(i).getScheduledTime();
+            LocalDateTime departure = rows.get(i+1).getScheduledTime();
 
-        LocalDateTime arrival = rows.get(1).getScheduledTime();
-        LocalDateTime departure = rows.get(2).getScheduledTime();
+             stoppingtime = Duration.between(arrival, departure);
+             long stime = stoppingtime.toMinutes();
+             String time = String.valueOf(stime);
+             int t = Integer.valueOf(time);
+             if (rows.get(i).getTrainStopping()) {
+                 stationAndTime.append(stoppingstation).append(", stops for ").append(time).append(" minutes\n");
 
-        Duration stoppingtime = Duration.between(arrival,departure);
+                 stoppingstations.add(stationAndTime);
+             }
+            i = i+2;
+        }
 
-        return stoppingtime.toMinutes();
+
+        return stationAndTime;
     }
 }
