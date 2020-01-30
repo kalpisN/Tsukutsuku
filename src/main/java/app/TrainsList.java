@@ -1,5 +1,10 @@
 package app;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+
+import java.net.URI;
+import java.net.URL;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -46,14 +51,4 @@ public class TrainsList {
         }
     }
 */
-
-    public void printTrainAssembly(String junanumero, TrainsList tl) {
-
-        /*for (Train train : tl.getTrains()) {
-            if (tl.getTrains().)
-        }*/
-
-
-
-    }
 }
